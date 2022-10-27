@@ -1,13 +1,9 @@
-const forms = () => {
+import checkNumInputs from "./checkNumInputs";
+const forms = (state) => {
     const form = document.querySelectorAll('form'),
-          inputs = document.querySelectorAll('input'),
-          phoneInputs = document.querySelectorAll('input[name="user_phone"]');
+          inputs = document.querySelectorAll('input');
+          checkNumInputs('input[name="user_phone"]');
           
-    phoneInputs.forEach(item => {
-        item.addEventListener('input', () => {
-            item.value = item.value.replace(/\D/, '');
-        })
-    })      
 
     const message = {
         loading: 'Загрузка...',
@@ -40,6 +36,11 @@ const forms = () => {
             item.appendChild(statusMessage);
 
             const formData = new FormData(item);
+            if (item.getAttribute('data-calc') === 'end') { //Добавляем данные собранные из модальных окон 
+                for ( let key in state) {
+                    formData.append(key, state[key]);
+                }
+            }
             
             postData('assets/server.php', formData)
                 .then(res => {
